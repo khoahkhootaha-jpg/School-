@@ -1,0 +1,22 @@
+{% extends "base.html" %}{% block title %}{{ a.title }} | کلاس‌یار{% endblock %}
+{% block body %}<p><a href="{{ url_for('class_view', cid=c.id) }}">بازگشت به {{ c.title }}</a></p>
+<h1>{{ a.title }}</h1>
+<div class="card">{{ a.description or 'توضیحی ثبت نشده است.' }}<div class="mute">{% if a.due %}مهلت: {{ a.due }}{% endif %}</div></div>
+{% if current_user.role == 'student' %}
+<h2>پاسخ شما</h2>
+{% if mine and mine.grade is not none %}
+<div class="card">{{ mine.text }}<p><span class="tag">نمره: {{ mine.grade }}</span> {{ mine.feedback }}</p></div>
+{% else %}
+<form method="post" class="card"><input type="hidden" name="_csrf" value="{{ csrf }}">
+<textarea name="text" rows="6" required>{{ mine.text if mine else '' }}</textarea><button>{{ 'ویرایش پاسخ' if mine else 'ارسال پاسخ' }}</button></form>
+{% endif %}
+{% else %}
+<h2>پاسخ‌ها ({{ subs|length }})</h2>
+{% for s in subs %}
+<form method="post" class="card"><input type="hidden" name="_csrf" value="{{ csrf }}"><input type="hidden" name="sid" value="{{ s.id }}">
+<b>{{ s.student.name }}</b><div class="mute">{{ s.created.strftime('%Y-%m-%d %H:%M') }}</div>
+<p>{{ s.text }}</p>
+<label>نمره<input type="number" step="0.25" name="grade" value="{{ s.grade if s.grade is not none else '' }}"></label>
+<label>بازخورد<input name="feedback" value="{{ s.feedback }}"></label><button>ثبت نمره</button></form>
+{% else %}<p class="mute">هنوز پاسخی ارسال نشده است.</p>{% endfor %}
+{% endif %}{% endblock %}

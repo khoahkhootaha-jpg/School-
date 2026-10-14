@@ -1,0 +1,9 @@
+{% extends "base.html" %}{% block title %}ثبت‌نام | کلاس‌یار{% endblock %}
+{% block body %}<h1>ثبت‌نام</h1>
+<form method="post" class="card"><input type="hidden" name="_csrf" value="{{ csrf }}">
+<label>نام و نام خانوادگی<input name="name" required maxlength="80"></label>
+<label>ایمیل<input type="email" name="email" required></label>
+<label>رمز عبور (حداقل ۶ کاراکتر)<input type="password" name="password" required minlength="6"></label>
+<p><label><input type="radio" name="role" value="student" checked style="width:auto"> دانش‌آموز</label>
+&nbsp; <label><input type="radio" name="role" value="teacher" style="width:auto"> معلم</label></p>
+<button>ساخت حساب</button></form>{% endblock %}

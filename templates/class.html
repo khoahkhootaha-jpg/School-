@@ -1,0 +1,28 @@
+{% extends "base.html" %}{% block title %}{{ c.title }} | کلاس‌یار{% endblock %}
+{% block body %}<h1>{{ c.title }}</h1>
+<p class="mute">{{ c.description }}</p>
+{% set teacher = current_user.id == c.teacher_id %}
+{% if teacher %}<p>کد ورود دانش‌آموزان: <span class="code">{{ c.code }}</span>
+&nbsp; <a class="btn" href="{{ url_for('attendance', cid=c.id) }}">حضور و غیاب</a></p>
+{% else %}<p class="mute">حضور: {{ present }} جلسه · غیبت: {{ absent }} جلسه</p>{% endif %}
+
+<h2>اطلاعیه‌ها</h2>
+{% if teacher %}<form method="post" action="{{ url_for('announce', cid=c.id) }}" class="card"><input type="hidden" name="_csrf" value="{{ csrf }}">
+<textarea name="text" rows="2" placeholder="پیام خود را بنویسید" required></textarea><button>انتشار اطلاعیه</button></form>{% endif %}
+{% for n in ann %}<div class="card">{{ n.text }}<div class="mute">{{ n.created.strftime('%Y-%m-%d') }}</div></div>
+{% else %}<p class="mute">اطلاعیه‌ای نیست.</p>{% endfor %}
+
+<h2>تکلیف‌ها</h2>
+{% for a in asg %}
+<a class="card link" href="{{ url_for('assignment_view', aid=a.id) }}"><b>{{ a.title }}</b>
+<div class="mute">{% if a.due %}مهلت: {{ a.due }}{% else %}بدون مهلت{% endif %}
+{% if not teacher and a.id in mine %} · <span class="tag">{% if mine[a.id].grade is not none %}نمره {{ mine[a.id].grade }}{% else %}ارسال شد{% endif %}</span>{% endif %}</div></a>
+{% else %}<p class="mute">تکلیفی تعریف نشده است.</p>{% endfor %}
+{% if teacher %}<form method="post" action="{{ url_for('assignment_new', cid=c.id) }}" class="card"><input type="hidden" name="_csrf" value="{{ csrf }}">
+<label>عنوان تکلیف<input name="title" required maxlength="120"></label>
+<label>توضیحات<textarea name="description" rows="3"></textarea></label>
+<label>مهلت<input type="date" name="due"></label><button>افزودن تکلیف</button></form>{% endif %}
+
+<h2>دانش‌آموزان ({{ c.students|length }})</h2>
+<div class="card">{% for s in c.students %}{{ s.name }}{% if not loop.last %}، {% endif %}{% else %}<span class="mute">هنوز کسی نپیوسته است.</span>{% endfor %}</div>
+{% endblock %}

@@ -1,0 +1,6 @@
+{% extends "base.html" %}{% block title %}ورود | کلاس‌یار{% endblock %}
+{% block body %}<h1>ورود</h1>
+<form method="post" class="card"><input type="hidden" name="_csrf" value="{{ csrf }}">
+<label>ایمیل<input type="email" name="email" required></label>
+<label>رمز عبور<input type="password" name="password" required></label>
+<button>ورود</button> <a href="{{ url_for('register') }}" class="mute">حساب ندارید؟ ثبت‌نام</a></form>{% endblock %}

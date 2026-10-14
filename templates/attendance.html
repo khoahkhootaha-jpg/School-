@@ -1,0 +1,9 @@
+{% extends "base.html" %}{% block title %}حضور و غیاب | کلاس‌یار{% endblock %}
+{% block body %}<p><a href="{{ url_for('class_view', cid=c.id) }}">بازگشت به {{ c.title }}</a></p>
+<h1>حضور و غیاب</h1>
+<form method="get" class="card"><label>تاریخ جلسه<input type="date" name="day" value="{{ day }}"></label><button>نمایش</button></form>
+<form method="post" class="card"><input type="hidden" name="_csrf" value="{{ csrf }}"><input type="hidden" name="day" value="{{ day }}">
+<table>{% for s in c.students %}<tr><td>{{ s.name }}</td>
+<td><label><input type="checkbox" name="p{{ s.id }}" style="width:auto;margin:0" {% if recs.get(s.id, True) %}checked{% endif %}> حاضر</label></td></tr>
+{% else %}<tr><td class="mute">دانش‌آموزی در کلاس نیست.</td></tr>{% endfor %}</table>
+<p><button>ذخیره</button></p></form>{% endblock %}

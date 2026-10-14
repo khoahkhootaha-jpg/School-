@@ -1,0 +1,16 @@
+{% extends "base.html" %}{% block title %}کلاس‌های من | کلاس‌یار{% endblock %}
+{% block body %}<h1>کلاس‌های من</h1>
+{% for c in classes %}
+<a class="card link" href="{{ url_for('class_view', cid=c.id) }}"><b>{{ c.title }}</b>
+<div class="mute">معلم: {{ c.teacher.name }} · {{ c.students|length }} دانش‌آموز</div></a>
+{% else %}<p class="mute">هنوز کلاسی ندارید.</p>{% endfor %}
+{% if current_user.role == 'teacher' %}
+<h2>ساخت کلاس جدید</h2>
+<form method="post" action="{{ url_for('class_new') }}" class="card"><input type="hidden" name="_csrf" value="{{ csrf }}">
+<label>نام کلاس<input name="title" required maxlength="100"></label>
+<label>توضیحات<textarea name="description" rows="2"></textarea></label><button>ساخت کلاس</button></form>
+{% else %}
+<h2>پیوستن به کلاس</h2>
+<form method="post" action="{{ url_for('class_join') }}" class="card"><input type="hidden" name="_csrf" value="{{ csrf }}">
+<label>کد کلاس (از معلم بگیرید)<input name="code" required maxlength="8"></label><button>پیوستن</button></form>
+{% endif %}{% endblock %}
