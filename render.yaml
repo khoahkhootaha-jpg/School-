@@ -1,0 +1,22 @@
+databases:
+  - name: classyar-db
+    plan: free
+    databaseName: classyar
+    user: classyar
+
+services:
+  - type: web
+    name: classyar
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.3
+      - key: SECRET_KEY
+        generateValue: true
+      - key: DATABASE_URL
+        fromDatabase:
+          name: classyar-db
+          property: connectionString
